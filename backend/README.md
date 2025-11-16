@@ -30,4 +30,5 @@ Use a browser, curl, or a tool like Postman to hit:
 - http://localhost:4000/api/health
 - http://localhost:4000/api/exercises
 - http://localhost:4000/api/meals
+
 If those endpoints return JSON, the backend is working correctly.
