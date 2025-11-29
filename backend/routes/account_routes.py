@@ -2,20 +2,27 @@ from flask import Blueprint, jsonify, request, session
 from utils.db import get_connection
 import datetime
 from psycopg2.extras import RealDictCursor
+from utils.check_input import validate_nickname, validate_dob, validate_height, validate_weight
 
+#Create blueprint for Account routes
 account_bp = Blueprint('account', __name__)
 
+#Get logged in users account info
 @account_bp.route('/account', methods=['GET'])
 def get_account():
-    print("SESSION:", dict(session))
+    #Get the user_id from the flask session
     user_id = session.get('user_id')
+
+    #Verify User
     if not user_id:
         return jsonify({"error": "KICKED OUT: NOT LOGGED IN"}), 401
 
     try:
+        #connect to DB
         conn = get_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
 
+        #Fetch the user's info and their progress updates from the user table and the progress_tracking table
         cur.execute("""
             SELECT u.username, u.nickname, u.date_of_birth, pt.height, pt.weight, pt.recorded_date
             FROM users u
@@ -25,6 +32,7 @@ def get_account():
             LIMIT 1;
         """, (user_id,))
         
+        #Get the first row
         data = cur.fetchone()
         if not data:
             # User exists but no progress_tracking row
@@ -41,6 +49,7 @@ def get_account():
                 "recorded_date": None
             }), 200
 
+        #Return user with their progress
         return jsonify({
             "username": data["username"],
             "nickname": data["nickname"],
@@ -54,29 +63,49 @@ def get_account():
         return jsonify({"error": str(e)}), 500
 
     finally:
+        #Disoncect from DB
         cur.close()
         conn.close()
 
-
+#Update user account
 @account_bp.route("/account/update", methods=["POST"])
 def update_account():
+    #Validate the user
     user_id = session.get("user_id")
     if not user_id:
         return jsonify({"error": "Not logged in"}), 401
 
+    #Get info from JSON
     data = request.json
     nickname = data.get("nickname")
     dob = data.get("date_of_birth")
     new_height = data.get("height")
     new_weight = data.get("weight")
 
+    if nickname is not None:
+        is_valid, error = validate_nickname(nickname)
+        if not is_valid:
+            return jsonify({"error": error}), 400
+
     dob_date = None
     if dob:
-        try:
-            dob_date = datetime.datetime.strptime(dob, "%Y-%m-%d").date()
-        except ValueError:
-            return jsonify({"error": "Invalid date format (YYYY-MM-DD required)"}), 400
+        is_valid, error, dob_date = validate_dob(dob)  # assuming your validate_dob returns date object
+        if not is_valid:
+            return jsonify({"error": error}), 400
 
+    # Validate new_height
+    if new_height is not None:
+        is_valid, error = validate_height(new_height)
+        if not is_valid:
+            return jsonify({"error": error}), 400
+
+    # Validate new_weight
+    if new_weight is not None:
+        is_valid, error = validate_weight(new_weight)
+        if not is_valid:
+            return jsonify({"error": error}), 400
+
+    #Connect to DB
     conn = get_connection()
     cur = conn.cursor()
 
@@ -89,15 +118,15 @@ def update_account():
             ORDER BY recorded_date DESC
             LIMIT 1;
         """, (user_id,))
-
         last_recorded_progress = cur.fetchone()
         has_existing_progress = last_recorded_progress is not None
         insert_progress = False
-
+        
+        #Want Height and Weight on first entry
         if not has_existing_progress:
             if new_height is None or new_weight is None:
                 return jsonify({"error": "Height and weight are required on first entry"}), 400
-        else:
+        else: #Otherwise we insert progress
             if new_height is not None and new_weight is not None:
                 insert_progress = True
                 last_height, last_weight = last_recorded_progress
@@ -122,6 +151,7 @@ def update_account():
                 VALUES (%s, %s, %s, NOW());
             """, (user_id, new_height, new_weight))
 
+        #Commit changes
         conn.commit()
         return jsonify({"message": "Account updated successfully"}), 200
 
@@ -130,5 +160,6 @@ def update_account():
         return jsonify({"error": str(e)}), 500
 
     finally:
+        #Disconnect from DB
         cur.close()
         conn.close()

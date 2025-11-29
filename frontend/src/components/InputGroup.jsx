@@ -6,7 +6,8 @@ export default function InputGroup({
   type = "text",
   value = "",
   onChange,
-  unit
+  unit,
+  placeholder
 }) {
   return (
     <div className="flex flex-col gap-2">
@@ -23,8 +24,10 @@ export default function InputGroup({
           type={type}
           value={value}
           onChange={onChange}
+          placeholder={placeholder}
           className="flex-1 outline-none"
         />
+        {/**If unit exists render small text for unit at the right of the input box*/}
         {unit && (
           <span className="text-sm opacity-70" style={{ color: colors.darkGreen }}>
             {unit}

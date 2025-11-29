@@ -8,5 +8,7 @@ export default function Meals() {
 
     return (
         <Navbar isLoggedIn={isLoggedIn} isSticky={isSticky}/>
+
+        
     );
 }

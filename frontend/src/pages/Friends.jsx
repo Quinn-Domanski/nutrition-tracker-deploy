@@ -6,6 +6,7 @@ import ChallengesList from "../components/friends/ChallengesList";
 import PendingRequests from "../components/friends/PendingRequests";
 import FriendsList from "../components/friends/FriendsList";
 import SearchBar from "../components/friends/SearchBar";
+import LogoutButton from "../components/LogoutButton";
 
 /**
   Inspiration for this friends page, from figma make. Edited to be simpler and fit our app better,
@@ -44,6 +45,11 @@ export default function Friends() {
                 <PendingRequests pendingRequests={pendingRequests} />
                 <SearchBar />
                 <FriendsList friends={friends} />
+            </div>
+
+            {/* SIGN OUT */}
+            <div className="flex justify-center pb-4">
+                <LogoutButton />
             </div>
         </div>
     );
