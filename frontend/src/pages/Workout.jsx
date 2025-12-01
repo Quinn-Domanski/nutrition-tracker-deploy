@@ -5,14 +5,28 @@ import AddExerciseModal from "../components/AddExerciseModal";
 import ManageExerciseModal from "../components/ManageExercisesModal";
 import colors from "../theme/colors";
 
-export default function Exercises() {
+import LogWorkoutModal from "../components/LogWorkoutModal";
+import ManageWorkoutModal from "../components/ManageWorkoutModal";
+import CreateWorkoutModal from "../components/CreateWorkoutModal";
+
+export default function Workout() {
   const isLoggedIn = true;
   const isSticky = false;
 
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openManageModal, setOpenManageModal] = useState(false);
 
-  const isAnyModalOpen = openAddModal || openManageModal;
+  // Workout modals
+  const [openLogWorkout, setOpenLogWorkout] = useState(false);
+  const [openManageWorkout, setOpenManageWorkout] = useState(false);
+  const [openCreateWorkout, setOpenCreateWorkout] = useState(false);
+
+  const isAnyModalOpen =
+    openAddModal ||
+    openManageModal ||
+    openLogWorkout ||
+    openManageWorkout ||
+    openCreateWorkout;
 
   const buttonClass = `
     px-6 py-3 rounded-xl font-semibold transition-colors
@@ -45,7 +59,7 @@ export default function Exercises() {
       <main className="max-w-4xl mx-auto p-6 space-y-8">
         {/* Title */}
         <h1 className="text-3xl font-bold text-center" style={{ color: colors.textDark }}>
-          Exercises
+          Workouts
         </h1>
 
         {/* Exercises Card */}
@@ -72,13 +86,38 @@ export default function Exercises() {
             </button>
           </div>
         </div>
+
+        {/* Workouts Card */}
+        <div className="p-6 rounded-xl border-2 bg-white" style={{ borderColor: colors.mint }}>
+          <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: colors.sage }}>
+            Workouts
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              className={buttonClass + " w-full"}
+              disabled={isAnyModalOpen}
+              onClick={() => setOpenLogWorkout(true)}
+            >
+              View Logged Workout
+            </button>
+
+            <button
+              className={buttonClass + " w-full"}
+              disabled={isAnyModalOpen}
+              onClick={() => setOpenCreateWorkout(true)}
+            >
+              Log new Workout
+            </button>
+          </div>
+        </div>
       </main>
 
       <div className="flex justify-center pb-4">
         <LogoutButton />
       </div>
 
-      {/* Modals */}
+      {/* Exercise MODALS */}
       <AddExerciseModal
         isOpen={openAddModal}
         onClose={() => setOpenAddModal(false)}
@@ -90,6 +129,22 @@ export default function Exercises() {
         onClose={() => setOpenManageModal(false)}
         subcategoriesByCategory={subcategoriesByCategory}
       />
-    </div>
+
+      {/* Workout Modals */}
+      <LogWorkoutModal
+        isOpen={openLogWorkout}
+        onClose={() => setOpenLogWorkout(false)}
+      />
+
+      <ManageWorkoutModal
+        isOpen={openManageWorkout}
+        onClose={() => setOpenManageWorkout(false)}
+      />
+
+      <CreateWorkoutModal
+        isOpen={openCreateWorkout}
+        onClose={() => setOpenCreateWorkout(false)}
+      />
+    </div >
   );
 }
