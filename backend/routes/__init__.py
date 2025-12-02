@@ -3,3 +3,5 @@ from .account_routes import account_bp
 from .meal_routes import meal_bp
 from .workout_routes import workout_bp
 from .exercise_routes import exercise_bp
+from .loggedworkout_routes import logged_workout_bp
+from .goal_routes import goal_bp

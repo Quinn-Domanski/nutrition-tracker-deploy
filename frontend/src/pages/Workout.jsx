@@ -6,6 +6,7 @@ import ManageExerciseModal from "../components/ManageExercisesModal";
 import CreateWorkoutModal from "../components/CreateWorkoutModal";
 import LogWorkoutModal from "../components/LogWorkoutModal";
 import ManageWorkoutModal from "../components/ManageWorkoutModal";
+import LoggedWorkoutsCard from "../components/loggedWorkoutsCard";
 import colors from "../theme/colors";
 
 export default function Workout() {
@@ -17,6 +18,7 @@ export default function Workout() {
   const [openLogWorkout, setOpenLogWorkout] = useState(false);
   const [openManageWorkout, setOpenManageWorkout] = useState(false);
   const [openCreateWorkout, setOpenCreateWorkout] = useState(false);
+  const [refreshLoggedWorkouts, setRefreshLoggedWorkouts] = useState(0);
 
   const isAnyModalOpen =
     openAddModal ||
@@ -134,6 +136,9 @@ export default function Workout() {
             </button>
           </div>
         </div>
+
+        {/* Logged Workouts Card */}
+        <LoggedWorkoutsCard key={refreshLoggedWorkouts} />
       </main>
 
       <div className="flex justify-center pb-4">
@@ -154,6 +159,7 @@ export default function Workout() {
       <LogWorkoutModal
         isOpen={openLogWorkout}
         onClose={() => setOpenLogWorkout(false)}
+        onWorkoutLogged={() => setRefreshLoggedWorkouts((prev) => prev + 1)}
       />
       <ManageWorkoutModal
         isOpen={openManageWorkout}

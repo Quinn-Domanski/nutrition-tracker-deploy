@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import ModalOverlay from "./ModalOverlay";
 
-export default function LogWorkoutModal({ isOpen, onClose }) {
+export default function LogWorkoutModal({ isOpen, onClose, onWorkoutLogged }) {
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [exercises, setExercises] = useState([]);
   const [workoutDate, setWorkoutDate] = useState(new Date().toISOString().slice(0, 10));
   const [notes, setNotes] = useState("");
   const [totalCalories, setTotalCalories] = useState(0);
-  const [userWeight, setUserWeight] = useState(150); // default 150 lbs
+  const [userWeight, setUserWeight] = useState(150);
 
   // Fetch user's most recent weight
   const fetchUserWeight = async () => {
@@ -25,7 +25,7 @@ export default function LogWorkoutModal({ isOpen, onClose }) {
     }
   };
 
-  // Load templates and user weight when modal opens
+  // Load templates when modal opens
   useEffect(() => {
     if (!isOpen) return;
 
@@ -104,12 +104,12 @@ export default function LogWorkoutModal({ isOpen, onClose }) {
       const intensity = parseFloat(ex.intensity || 1);
 
       if (isCardio && ex.distance && ex.duration) {
-        // Cardio: duration_hours * (calories_per_kg * intensity) * (user_weight / 0.453592) / 200
+        // Cardio: duration_hours * (calories_per_kg * intensity) * (user_weight / 0.453592) / 5
         const durationHours = parseFloat(ex.duration) / 60;
-        total += (durationHours * (parseFloat(ex.calories_per_kg) * intensity) * (userWeight / 0.453592)) / 200;
+        total += (durationHours * (parseFloat(ex.calories_per_kg) * intensity) * (userWeight / 0.453592)) / 5;
       } else if (ex.sets && ex.reps && ex.weight) {
-        // Strength: ((calories_per_kg * intensity) * user_weight * (sets * reps / 18)) / 60
-        total += ((parseFloat(ex.calories_per_kg) * intensity) * userWeight * (parseFloat(ex.sets) * parseFloat(ex.reps) / 18)) / 60;
+        // Strength: ((calories_per_kg * intensity) * user_weight * (sets * reps / 18)) / 100
+        total += ((parseFloat(ex.calories_per_kg) * intensity) * userWeight * (parseFloat(ex.sets) * parseFloat(ex.reps) / 18)) / 100;
       }
     });
     setTotalCalories(total);
@@ -155,6 +155,9 @@ export default function LogWorkoutModal({ isOpen, onClose }) {
       const data = await res.json();
       if (data.success) {
         alert(`Workout logged! Estimated calories burned: ${data.total_calories.toFixed(2)}`);
+        if (onWorkoutLogged) {
+          onWorkoutLogged();
+        }
         onClose();
       } else {
         alert("Error logging workout: " + (data.error || "Unknown"));
@@ -174,9 +177,8 @@ export default function LogWorkoutModal({ isOpen, onClose }) {
         {templates.map((t) => (
           <div
             key={t.workout_id}
-            className={`p-2 cursor-pointer hover:bg-gray-100 rounded ${
-              selectedTemplate?.workout_id === t.workout_id ? "bg-gray-200" : ""
-            }`}
+            className={`p-2 cursor-pointer hover:bg-gray-100 rounded ${selectedTemplate?.workout_id === t.workout_id ? "bg-gray-200" : ""
+              }`}
             onClick={() => loadTemplateExercises(t)}
           >
             {t.name}
@@ -201,6 +203,7 @@ export default function LogWorkoutModal({ isOpen, onClose }) {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           className="w-full border p-2 rounded"
+          rows="3"
         />
       </div>
 
