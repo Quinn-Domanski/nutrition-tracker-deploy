@@ -67,6 +67,95 @@ def get_account():
         cur.close()
         conn.close()
 
+#Get user stats (streak, meals logged, workouts logged, completed goals)
+@account_bp.route('/account/stats', methods=['GET'])
+def get_account_stats():
+    #Get the user_id from the flask session
+    user_id = session.get('user_id')
+
+    #Verify User
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+
+    try:
+        #Connect to DB
+        conn = get_connection()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+
+        today = datetime.date.today()
+
+        # Get login streak - count consecutive days from today going backwards
+        cur.execute("""
+            WITH RECURSIVE streak_calc AS (
+                -- Base case: start from today
+                SELECT CURRENT_DATE::date as check_date, 1 as streak_count
+                WHERE EXISTS (
+                    SELECT 1 FROM meals 
+                    WHERE user_id = %s AND meal_date = CURRENT_DATE
+                )
+                UNION ALL
+                -- Recursive case: go back one day at a time
+                SELECT (check_date - INTERVAL '1 day')::date, streak_count + 1
+                FROM streak_calc
+                WHERE EXISTS (
+                    SELECT 1 FROM meals 
+                    WHERE user_id = %s AND meal_date = (check_date - INTERVAL '1 day')::date
+                )
+                AND streak_count < 365
+            )
+            SELECT COALESCE(MAX(streak_count), 0) as streak FROM streak_calc;
+        """, (user_id, user_id))
+        
+        streak_result = cur.fetchone()
+        streak = streak_result['streak'] if streak_result else 0
+
+        # Check if meal was logged today
+        cur.execute("""
+            SELECT COUNT(*) > 0 as logged
+            FROM meals
+            WHERE user_id = %s AND meal_date = %s;
+        """, (user_id, today))
+        
+        meal_result = cur.fetchone()
+        meal_logged_today = meal_result['logged'] if meal_result else False
+
+        # Check if workout was logged today
+        cur.execute("""
+            SELECT COUNT(*) > 0 as logged
+            FROM workouts
+            WHERE user_id = %s AND DATE(workout_date) = %s;
+        """, (user_id, today))
+        
+        workout_result = cur.fetchone()
+        workout_logged_today = workout_result['logged'] if workout_result else False
+
+        # Get completed goals count
+        cur.execute("""
+            SELECT COUNT(*) as completed
+            FROM goals
+            WHERE user_id = %s AND goal_complete = true;
+        """, (user_id,))
+        
+        goals_result = cur.fetchone()
+        completed_goals = goals_result['completed'] if goals_result else 0
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            "streak": streak,
+            "mealLoggedToday": meal_logged_today,
+            "workoutLoggedToday": workout_logged_today,
+            "completedGoals": completed_goals
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        cur.close()
+        conn.close()
+
 #Update user account
 @account_bp.route("/account/update", methods=["POST"])
 def update_account():

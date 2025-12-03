@@ -1,13 +1,14 @@
 import NLogo from "./NLogo";
 import colors from "../theme/colors";
-import { Utensils, Dumbbell, Trophy, Users, User, House} from "lucide-react";
+import { Utensils, Dumbbell, Trophy, Users, User, House, LineChart } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const loggedInItems = [
-  { icon: Utensils, label: "Meals", to:"/meals"},
-  { icon: Dumbbell, label: "Workout", to:"/workout"},
-  { icon: Trophy, label: "Goals", to:"/goals"},
-  { icon: Users, label: "Friends", to:"/friends"},
+  { icon: Utensils, label: "Meals", to: "/meals" },
+  { icon: Dumbbell, label: "Workout", to: "/workout" },
+  { icon: Trophy, label: "Goals", to: "/goals" },
+  { icon: Users, label: "Friends", to: "/friends" },
+  { icon: LineChart, label: "Track", to: "/track" },
 ];
 
 const LoggedInLinks = () => (
@@ -34,7 +35,7 @@ const LoggedInLinks = () => (
       <button
         className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer shadow-sm"
         style={{ backgroundColor: colors.sage, color: colors.cream }}>
-          <House className="w-5 h-5" />
+        <House className="w-5 h-5" />
       </button>
     </Link>
   </div>

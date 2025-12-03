@@ -18,6 +18,7 @@ Full-stack web app for our DBMS project.
   - React
   - Vite
   - npm / Node.js
+  - tailwindcss
 
 ---
 
@@ -35,3 +36,13 @@ dbmsnutritiontracker/  (or fitness-app/)
     src/
       App.jsx
       main.jsx
+    
+
+Running the Project:
+
+-Go to psql and do source schema.sql
+-Make .env file and copy .env.example and fill in the information
+-Create a venv and do pip install -r requirements.txt
+-do flask run
+-cd frontend, npm run dev
+

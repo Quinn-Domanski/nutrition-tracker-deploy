@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict gOS8lHaf4VXV7lzuGB3PGDQaPCpJIIXwRxH8q0ugyOgMY01oqenqBjKTnevTcmI
+\restrict YmtDmCUqRhek3bosYcLjPVXIvSjjkTaxQzIWXbi9sfq5gN0XoxNCvvU2erd04YK
 
 -- Dumped from database version 16.10 (Ubuntu 16.10-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 17.7 (Ubuntu 17.7-3.pgdg24.04+1)
@@ -836,5 +836,5 @@ ALTER TABLE ONLY public.workouts
 -- PostgreSQL database dump complete
 --
 
-\unrestrict gOS8lHaf4VXV7lzuGB3PGDQaPCpJIIXwRxH8q0ugyOgMY01oqenqBjKTnevTcmI
+\unrestrict YmtDmCUqRhek3bosYcLjPVXIvSjjkTaxQzIWXbi9sfq5gN0XoxNCvvU2erd04YK
 

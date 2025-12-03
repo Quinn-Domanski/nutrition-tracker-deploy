@@ -20,10 +20,10 @@ def get_goals():
 
         query = """
             SELECT * FROM goals
-            WHERE user_id = %s
+            WHERE user_id = %s AND challenge_status NOT IN %s
             ORDER BY date_added DESC
         """
-        params = [user_id]
+        params = [user_id, ("declined", "pending")]
 
         cur.execute(query, params)
         goals = cur.fetchall()
@@ -47,7 +47,7 @@ def get_goals():
             end_date = g["goal_end_date"]
             if end_date is None or end_date >= today:
                 visible_goals.append(g)
-
+        
         # Apply search filter
         if search_query:
             visible_goals = [g for g in visible_goals if search_query.lower() in g["name"].lower()]

@@ -575,7 +575,7 @@ export default function Meals() {
                                 </div>
 
                                 <div>
-                                    <label className="font-semibold text-sm">Date (optional)</label>
+                                    <label className="font-semibold text-sm">Date</label>
                                     <input name="meal_date" value={customMeal.meal_date} onChange={handleCustomChange}
                                         type="date" className="p-2 border rounded-lg w-full mt-1" />
                                 </div>
@@ -722,7 +722,7 @@ export default function Meals() {
                                 </div>
 
                                 <div>
-                                    <label className="font-semibold text-sm">Date (optional)</label>
+                                    <label className="font-semibold text-sm">Date</label>
                                     <input name="meal_date" value={searchMealDate} onChange={e => setSearchMealDate(e.target.value)}
                                         type="date" className="p-2 border rounded-lg w-full mt-1" />
                                 </div>
