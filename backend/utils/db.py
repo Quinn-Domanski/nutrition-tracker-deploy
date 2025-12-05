@@ -9,5 +9,5 @@ def get_connection():
         user=os.getenv("DB_USER", "nutri"),
         password=os.getenv("DB_PASSWORD", ""),
         port=os.getenv("DB_PORT", "5432"),
-        # cursor_factory=RealDictCursor
+        cursor_factory=RealDictCursor
     )

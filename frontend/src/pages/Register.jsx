@@ -1,5 +1,6 @@
 import { useState } from "react";
 import colors from "../theme/colors";
+import { api } from "../utils/api";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -42,12 +43,7 @@ export default function Register() {
     }
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/register`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, dob, password }),
-      });
+      const res = await api.post("/register", { username, dob, password });
 
       const data = await res.json();
       if (!res.ok) {
@@ -97,6 +93,7 @@ export default function Register() {
             onChange={(e) => setUsername(e.target.value)}
             className="w-full p-3 rounded-lg outline-none"
             style={{ backgroundColor: colors.cream }}
+            required
           />
 
           <input
@@ -106,6 +103,7 @@ export default function Register() {
             onChange={(e) => setDob(e.target.value)}
             className="w-full p-3 rounded-lg outline-none"
             style={{ backgroundColor: colors.cream }}
+            required
           />
 
           <input
@@ -118,6 +116,7 @@ export default function Register() {
             }}
             className="w-full p-3 rounded-lg outline-none"
             style={{ backgroundColor: colors.cream }}
+            required
           />
 
           <input
@@ -127,6 +126,7 @@ export default function Register() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full p-3 rounded-lg outline-none"
             style={{ backgroundColor: colors.cream }}
+            required
           />
 
           <button

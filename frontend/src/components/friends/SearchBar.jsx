@@ -1,8 +1,7 @@
 import { Search, UserPlus } from "lucide-react";
 import colors from "../../theme/colors";
 import { useState } from "react";
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { api } from "../../utils/api";
 
 export default function SearchBar({ onRequestSent }) {
   const [query, setQuery] = useState("");
@@ -20,11 +19,8 @@ export default function SearchBar({ onRequestSent }) {
     setError(null);
 
     try {
-      const response = await fetch(
-        `${API_URL}/api/friends/search?query=${encodeURIComponent(query)}`,
-        {
-          credentials: 'include'
-        }
+      const response = await api.get(
+        `/friends/search?query=${encodeURIComponent(query)}`
       );
 
       if (!response.ok) {
@@ -47,14 +43,7 @@ export default function SearchBar({ onRequestSent }) {
 
   const handleSendRequest = async (userId) => {
     try {
-      const response = await fetch(`${API_URL}/api/friends/request`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify({ friend_id: userId })
-      });
+      const response = await api.post("/friends/request", { friend_id: userId });
 
       if (response.ok) {
         setResults(results.map(user =>

@@ -6,8 +6,7 @@ import PendingRequests from "../components/friends/PendingRequests";
 import FriendsList from "../components/friends/FriendsList";
 import SearchBar from "../components/friends/SearchBar";
 import LogoutButton from "../components/LogoutButton";
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { api } from "../utils/api";
 
 export default function Friends() {
     const isLoggedIn = true;
@@ -23,9 +22,7 @@ export default function Friends() {
     const fetchFriendsData = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${API_URL}/api/friends/all`, {
-                credentials: 'include'
-            });
+            const response = await api.get("/friends/all");
 
             if (!response.ok) {
                 throw new Error('Failed to fetch friends data');
@@ -51,10 +48,7 @@ export default function Friends() {
     // Handle accepting friend request
     const handleAcceptRequest = async (friendshipId) => {
         try {
-            const response = await fetch(`${API_URL}/api/friends/accept/${friendshipId}`, {
-                method: 'POST',
-                credentials: 'include'
-            });
+            const response = await api.post(`/friends/accept/${friendshipId}`, {});
 
             if (response.ok) {
                 fetchFriendsData();
@@ -67,10 +61,7 @@ export default function Friends() {
     // Handle declining friend request
     const handleDeclineRequest = async (friendshipId) => {
         try {
-            const response = await fetch(`${API_URL}/api/friends/decline/${friendshipId}`, {
-                method: 'POST',
-                credentials: 'include'
-            });
+            const response = await api.post(`/friends/decline/${friendshipId}`, {});
 
             if (response.ok) {
                 fetchFriendsData();
@@ -83,10 +74,7 @@ export default function Friends() {
     // Handle accepting challenge
     const handleAcceptChallenge = async (challengeId) => {
         try {
-            const response = await fetch(`${API_URL}/api/challenges/accept/${challengeId}`, {
-                method: 'POST',
-                credentials: 'include'
-            });
+            const response = await api.post(`/challenges/accept/${challengeId}`, {});
 
             if (response.ok) {
                 fetchFriendsData();
@@ -99,10 +87,7 @@ export default function Friends() {
     // Handle declining challenge
     const handleDeclineChallenge = async (challengeId) => {
         try {
-            const response = await fetch(`${API_URL}/api/challenges/decline/${challengeId}`, {
-                method: 'POST',
-                credentials: 'include'
-            });
+            const response = await api.post(`/challenges/decline/${challengeId}`, {});
 
             if (response.ok) {
                 fetchFriendsData();
@@ -119,10 +104,7 @@ export default function Friends() {
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/friends/remove/${friendUserId}`, {
-                method: 'DELETE',
-                credentials: 'include'
-            });
+            const response = await api.delete(`/friends/remove/${friendUserId}`);
 
             if (response.ok) {
                 fetchFriendsData();

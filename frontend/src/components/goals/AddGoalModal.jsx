@@ -45,6 +45,7 @@ export default function AddGoalModal({ isOpen, onClose, onSubmit }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full border p-3 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+                required
             />
 
             {/* Goal Type */}
@@ -66,6 +67,7 @@ export default function AddGoalModal({ isOpen, onClose, onSubmit }) {
                 value={targetValue}
                 onChange={(e) => setTargetValue(e.target.value)}
                 className="w-full border p-3 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+                required
             />
 
             {/* Current Value */}
@@ -76,6 +78,7 @@ export default function AddGoalModal({ isOpen, onClose, onSubmit }) {
                 value={currentValue}
                 onChange={(e) => setCurrentValue(e.target.value)}
                 className="w-full border p-3 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+                required
             />
 
             {/* Metric Unit */}

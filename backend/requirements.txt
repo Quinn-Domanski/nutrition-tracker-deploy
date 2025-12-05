@@ -12,6 +12,7 @@ Flask-Migrate==4.1.0
 Flask-Session==0.8.0
 Flask-SQLAlchemy==3.1.1
 greenlet==3.2.4
+gunicorn==23.0.0
 idna==3.11
 inflect==7.5.0
 itsdangerous==2.2.0
@@ -21,6 +22,7 @@ MarkupSafe==3.0.3
 more-itertools==10.8.0
 msgspec==0.19.0
 numpy==2.3.5
+packaging==25.0
 pandas==2.3.3
 psycopg2-binary==2.9.11
 python-dateutil==2.9.0.post0

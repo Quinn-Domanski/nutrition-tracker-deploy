@@ -3,7 +3,7 @@ from utils.db import get_connection
 import datetime
 from psycopg2.extras import RealDictCursor
 
-workout_bp = Blueprint('workout', __name__)
+workout_bp = Blueprint('workout', __name__, url_prefix='/api')
 
 @workout_bp.get("/workouts")
 def get_workouts():

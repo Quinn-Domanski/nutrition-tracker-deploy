@@ -4,7 +4,7 @@ from psycopg2.extras import RealDictCursor
 
 CARDIO_MET = 7.8  # Generic MET value for cardio if no match found
 
-exercise_bp = Blueprint("exercise_bp", __name__, url_prefix="/exercises")
+exercise_bp = Blueprint("exercise_bp", __name__, url_prefix="/api/exercises")
 
 # Compute auto kcal based on category and name only (no intensity)
 def compute_auto_kcal(cur, name, category_str):

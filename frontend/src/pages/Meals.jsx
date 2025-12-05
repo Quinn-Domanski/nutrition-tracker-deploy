@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import colors from "../theme/colors";
 import LogoutButton from "../components/LogoutButton";
 import ModalOverlay from "../components/ModalOverlay";
+import { api } from "../utils/api";
 
 {/**Used CHATGPT to help with the design of the website and ensure that all of the cards on the website were properly aligned. 
     Additionally, used it to help ensure the modals are working as intended. */}
@@ -87,7 +88,7 @@ export default function Meals() {
 
     //Fetch all previously added meals
     useEffect(() => {
-        fetch("http://localhost:5000/meals/history", { credentials: "include" })
+        api.get("/meals/history")
             .then(res => res.json())
             .then(data => setSavedMeals(data))
             .catch(err => console.error("Failed to load meals:", err));
@@ -95,7 +96,7 @@ export default function Meals() {
 
     //Fetch all logged meals (including reused instances)
     useEffect(() => {
-        fetch("http://localhost:5000/meals/logged", { credentials: "include" })
+        api.get("/meals/logged")
             .then(res => res.json())
             .then(data => setLoggedMeals(data))
             .catch(err => console.error("Failed to load logged meals:", err));
@@ -178,12 +179,7 @@ export default function Meals() {
         };
 
         try {
-            const res = await fetch("http://localhost:5000/meals/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(payload)
-            });
+            const res = await api.post("/meals/add", payload);
             if (res.ok) {
                 alert("Meal added!");
                 setOpenCustomModal(false);
@@ -193,10 +189,10 @@ export default function Meals() {
                     meal_date: ""
                 });
                 setCustomMealFoods([]);
-                const mealsRes = await fetch("http://localhost:5000/meals/history", { credentials: "include" });
+                const mealsRes = await api.get("/meals/history");
                 const mealsData = await mealsRes.json();
                 setSavedMeals(mealsData);
-                const loggedRes = await fetch("http://localhost:5000/meals/logged", { credentials: "include" });
+                const loggedRes = await api.get("/meals/logged");
                 const loggedData = await loggedRes.json();
                 setLoggedMeals(loggedData);
             } else {
@@ -211,7 +207,7 @@ export default function Meals() {
     //Search Food
     const handleSearch = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/meals/food/search?query=${encodeURIComponent(searchQuery)}`, { credentials: "include" });
+            const res = await api.get(`/meals/food/search?query=${encodeURIComponent(searchQuery)}`);
             const data = await res.json();
             console.log("Search response:", data);
             if (res.ok) {
@@ -260,12 +256,7 @@ export default function Meals() {
             foods: mealFoods
         };
         try {
-            const res = await fetch("http://localhost:5000/meals/reuse", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(payload)
-            });
+            const res = await api.post("/meals/reuse", payload);
             if (res.ok) {
                 alert("Meal logged!");
                 setOpenSearchModal(false);
@@ -276,7 +267,7 @@ export default function Meals() {
                 setSearchMealName("");
                 setSearchMealType("");
                 setSearchMealDate("");
-                const loggedRes = await fetch("http://localhost:5000/meals/logged", { credentials: "include" });
+                const loggedRes = await api.get("/meals/logged");
                 const loggedData = await loggedRes.json();
                 setLoggedMeals(loggedData);
             }
@@ -303,18 +294,13 @@ export default function Meals() {
         };
 
         try {
-            const res = await fetch("http://localhost:5000/meals/reuse", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(payload)
-            });
+            const res = await api.post("/meals/reuse", payload);
             if (res.ok) {
                 alert("Meal logged again!");
                 setOpenSavedModal(false);
                 setReuseMealAmounts({});
                 setReuseMealDate("");
-                const loggedRes = await fetch("http://localhost:5000/meals/logged", { credentials: "include" });
+                const loggedRes = await api.get("/meals/logged");
                 const loggedData = await loggedRes.json();
                 setLoggedMeals(loggedData);
             }
@@ -358,22 +344,17 @@ export default function Meals() {
     //Save edited logged meal
     const handleSaveEditMeal = async () => {
         try {
-            const res = await fetch("http://localhost:5000/meals/edit", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({
-                    meal_id: editingMeal.meal_id,
-                    name: editMealData.name,
-                    meal_type: editMealData.meal_type,
-                    meal_date: editMealData.meal_date,
-                    foods: editMealData.foods
-                })
+            const res = await api.put("/meals/edit", {
+                meal_id: editingMeal.meal_id,
+                name: editMealData.name,
+                meal_type: editMealData.meal_type,
+                meal_date: editMealData.meal_date,
+                foods: editMealData.foods
             });
             if (res.ok) {
                 alert("Meal updated!");
                 setOpenEditModal(false);
-                const mealsRes = await fetch("http://localhost:5000/meals/logged", { credentials: "include" });
+                const mealsRes = await api.get("/meals/logged");
                 const mealsData = await mealsRes.json();
                 setLoggedMeals(mealsData);
             } else {
@@ -390,13 +371,10 @@ export default function Meals() {
         if (!window.confirm("Are you sure you want to delete this meal?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/meals/delete?meal_id=${mealId}`, {
-                method: "DELETE",
-                credentials: "include"
-            });
+            const res = await api.delete(`/meals/delete?meal_id=${mealId}`);
             if (res.ok) {
                 alert("Meal deleted!");
-                const mealsRes = await fetch("http://localhost:5000/meals/logged", { credentials: "include" });
+                const mealsRes = await api.get("/meals/logged");
                 const mealsData = await mealsRes.json();
                 setLoggedMeals(mealsData);
             } else {

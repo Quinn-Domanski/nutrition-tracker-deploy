@@ -3,7 +3,7 @@ from utils.db import get_connection
 from psycopg2.extras import RealDictCursor
 from datetime import datetime
 
-logged_workout_bp = Blueprint('logged_workout', __name__)
+logged_workout_bp = Blueprint('logged_workout', __name__, url_prefix='/api')
 
 # Get all logged workouts for user
 @logged_workout_bp.get("/logged-workouts")

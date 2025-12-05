@@ -15,6 +15,7 @@ import {
   Calendar,
   Trophy
 } from "lucide-react";
+import { api } from "../utils/api";
 
 export default function Account() {
   // Setup state variables
@@ -36,7 +37,7 @@ export default function Account() {
 
   useEffect(() => {
     // Fetch account data
-    fetch("http://localhost:5000/account", { credentials: "include" })
+    api.get("/account")
       .then(res => res.json())
       .then(data => {
         if (data.error) {
@@ -56,7 +57,7 @@ export default function Account() {
       });
 
     // Fetch stats data
-    fetch("http://localhost:5000/account/stats", { credentials: "include" })
+    api.get("/account/stats")
       .then(res => res.json())
       .then(data => {
         console.log("Stats response:", data);
@@ -84,16 +85,11 @@ export default function Account() {
     setSubmiting(true);
 
     try {
-      const res = await fetch("http://localhost:5000/account/update", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nickname: nickname || null,
-          date_of_birth: dob || null,
-          height: height || null,
-          weight: weight || null,
-        }),
+      const res = await api.post("/account/update", {
+        nickname: nickname || null,
+        date_of_birth: dob || null,
+        height: height || null,
+        weight: weight || null,
       });
 
       const data = await res.json();
@@ -107,7 +103,7 @@ export default function Account() {
   };
 
   const handleLogout = () => {
-    fetch("http://localhost:5000/auth/logout", { credentials: "include" })
+    api.post("/auth/logout", {})
       .then(() => window.location.href = "/login");
   };
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function GoalCard({ goal, logProgress, cancelGoal }) {
+export default function GoalCard({ goal, logProgress, cancelGoal, completeGoal }) {
     const [progressValue, setProgressValue] = useState("");
     const [isLogging, setIsLogging] = useState(false);
 
@@ -12,7 +12,11 @@ export default function GoalCard({ goal, logProgress, cancelGoal }) {
     };
 
     const handleComplete = () => {
-        logProgress(goal.goal_id, 1, "None");
+        if (completeGoal) {
+            completeGoal(goal.goal_id);
+        } else {
+            logProgress(goal.goal_id, 1, "None");
+        }
     };
 
     return (
@@ -37,6 +41,7 @@ export default function GoalCard({ goal, logProgress, cancelGoal }) {
                                     value={progressValue}
                                     onChange={(e) => setProgressValue(e.target.value)}
                                     className="border p-2 rounded w-1/2"
+                                    required
                                 />
                                 <span className="self-center">{goal.metric_unit || ""}</span>
                                 <button

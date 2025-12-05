@@ -17,7 +17,6 @@ const LoggedInLinks = () => (
       {loggedInItems.map((item) => (
         <Link to={item.to} key={item.label}>
           <button
-            key={item.label}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition hover:shadow-sm"
             style={{
               backgroundColor: colors.cream,

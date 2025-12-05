@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ModalOverlay from "./ModalOverlay";
+import { api } from "../utils/api";
 
 export default function CreateWorkoutModal({ isOpen, onClose, exercises }) {
   const [workoutName, setWorkoutName] = useState("");
@@ -44,12 +45,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, exercises }) {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/workouts", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await api.post("/workouts", payload);
 
       const data = await res.json();
 
@@ -80,6 +76,7 @@ export default function CreateWorkoutModal({ isOpen, onClose, exercises }) {
         onChange={(e) => setWorkoutName(e.target.value)}
         placeholder="Push Day, Cardio Burn, etc."
         className="w-full border p-2 rounded mb-4"
+        required
       />
 
       <label className="block font-semibold mb-1">Notes (optional)</label>

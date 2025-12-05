@@ -3,7 +3,7 @@ from utils.db import get_connection
 import datetime
 from psycopg2.extras import RealDictCursor
 
-friend_bp = Blueprint('friend', __name__)
+friend_bp = Blueprint('friend', __name__, url_prefix='/api')
 
 # Middleware to check if user is logged in
 def login_required(f):
@@ -16,7 +16,7 @@ def login_required(f):
     return decorated_function
 
 # Get all friends data (friends, pending requests, challenges)
-@friend_bp.route('/api/friends/all', methods=['GET'])
+@friend_bp.route('/friends/all', methods=['GET'])
 @login_required
 def get_all_friends_data():
     user_id = session['user_id']
@@ -110,7 +110,7 @@ def get_all_friends_data():
         conn.close()
 
 # Search for users
-@friend_bp.route('/api/friends/search', methods=['GET'])
+@friend_bp.route('/friends/search', methods=['GET'])
 @login_required
 def search_users():
     user_id = session['user_id']
@@ -161,7 +161,7 @@ def search_users():
         conn.close()
 
 # Send friend request
-@friend_bp.route('/api/friends/request', methods=['POST'])
+@friend_bp.route('/friends/request', methods=['POST'])
 @login_required
 def send_friend_request():
     user_id = session['user_id']
@@ -208,7 +208,7 @@ def send_friend_request():
         conn.close()
 
 # Accept friend request
-@friend_bp.route('/api/friends/accept/<int:friendship_id>', methods=['POST'])
+@friend_bp.route('/friends/accept/<int:friendship_id>', methods=['POST'])
 @login_required
 def accept_friend_request(friendship_id):
     user_id = session['user_id']
@@ -240,7 +240,7 @@ def accept_friend_request(friendship_id):
         conn.close()
 
 # Decline friend request
-@friend_bp.route('/api/friends/decline/<int:friendship_id>', methods=['POST'])
+@friend_bp.route('/friends/decline/<int:friendship_id>', methods=['POST'])
 @login_required
 def decline_friend_request(friendship_id):
     user_id = session['user_id']
@@ -271,7 +271,7 @@ def decline_friend_request(friendship_id):
         conn.close()
 
 # Remove friend
-@friend_bp.route('/api/friends/remove/<int:friend_user_id>', methods=['DELETE'])
+@friend_bp.route('/friends/remove/<int:friend_user_id>', methods=['DELETE'])
 @login_required
 def remove_friend(friend_user_id):
     user_id = session['user_id']
@@ -303,7 +303,7 @@ def remove_friend(friend_user_id):
         conn.close()
 
 # Send challenge (create a goal for another user)
-@friend_bp.route('/api/challenges/send', methods=['POST'])
+@friend_bp.route('/challenges/send', methods=['POST'])
 @login_required
 def send_challenge():
     user_id = session['user_id']
@@ -361,7 +361,7 @@ def send_challenge():
         conn.close()
 
 # Accept challenge
-@friend_bp.route('/api/challenges/accept/<int:goal_id>', methods=['POST'])
+@friend_bp.route('/challenges/accept/<int:goal_id>', methods=['POST'])
 @login_required
 def accept_challenge(goal_id):
     user_id = session['user_id']
@@ -392,7 +392,7 @@ def accept_challenge(goal_id):
         conn.close()
 
 # Decline challenge
-@friend_bp.route('/api/challenges/decline/<int:goal_id>', methods=['POST'])
+@friend_bp.route('/challenges/decline/<int:goal_id>', methods=['POST'])
 @login_required
 def decline_challenge(goal_id):
     user_id = session['user_id']

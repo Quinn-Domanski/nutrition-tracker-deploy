@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import colors from "../theme/colors";
+import { api } from "../utils/api";
 
 export default function LoggedWorkoutsCard({ onRefresh }) {
     const [loggedWorkouts, setLoggedWorkouts] = useState([]);
@@ -44,9 +45,7 @@ export default function LoggedWorkoutsCard({ onRefresh }) {
     const loadWorkouts = async () => {
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:5000/logged-workouts", {
-                credentials: "include",
-            });
+            const res = await api.get("/logged-workouts");
             const data = await res.json();
 
             if (data.workouts) {
@@ -67,11 +66,8 @@ export default function LoggedWorkoutsCard({ onRefresh }) {
             setExpandedWorkoutId(null);
         } else {
             try {
-                const res = await fetch(
-                    `http://localhost:5000/logged-workouts/${workout.workout_id}/exercises`,
-                    {
-                        credentials: "include",
-                    }
+                const res = await api.get(
+                    `/logged-workouts/${workout.workout_id}/exercises`
                 );
                 const data = await res.json();
 
@@ -91,10 +87,7 @@ export default function LoggedWorkoutsCard({ onRefresh }) {
         if (!window.confirm("Are you sure you want to delete this workout?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/logged-workouts/${workoutId}`, {
-                method: "DELETE",
-                credentials: "include",
-            });
+            const res = await api.delete(`/logged-workouts/${workoutId}`);
             const data = await res.json();
             if (data.success) {
                 setLoggedWorkouts(

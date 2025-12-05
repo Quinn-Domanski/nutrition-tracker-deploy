@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ModalOverlay from "./ModalOverlay";
+import { api } from "../utils/api";
 
 export default function AddExerciseModal({ isOpen, onClose, subcategoriesByCategory }) {
   // Form state
@@ -30,12 +31,7 @@ export default function AddExerciseModal({ isOpen, onClose, subcategoriesByCateg
     };
 
     try {
-      const res = await fetch("http://localhost:5000/exercises/add", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await api.post("/exercises/add", payload);
 
       const data = await res.json();
 

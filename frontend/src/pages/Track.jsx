@@ -5,7 +5,8 @@ import {
 } from 'recharts';
 import { CheckCircle2, TrendingUp, Flame } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import colors from '../theme/colors';   // ✅ FIXED: now imported properly
+import colors from '../theme/colors';
+import { api } from '../utils/api';
 
 export default function TrackPage() {
     const [selectedGraphs, setSelectedGraphs] = useState(['weight', 'calories', 'macros']);
@@ -29,9 +30,7 @@ export default function TrackPage() {
         setLoading(true);
         setError('');
         try {
-            const response = await fetch('http://localhost:5000/track/data', {
-                credentials: 'include'
-            });
+            const response = await api.get('/track/data');
 
             if (!response.ok) throw new Error('Failed to fetch tracking data');
 

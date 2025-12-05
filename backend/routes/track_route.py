@@ -4,7 +4,7 @@ import datetime
 from psycopg2.extras import RealDictCursor
 
 # Create blueprint for Track routes
-track_bp = Blueprint('track', __name__)
+track_bp = Blueprint('track', __name__, url_prefix='/api')
 
 @track_bp.route('/track/data', methods=['GET'])
 def get_track_data():

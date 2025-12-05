@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ModalOverlay from "./ModalOverlay";
+import { api } from "../utils/api";
 
 export default function LogWorkoutModal({ isOpen, onClose, onWorkoutLogged }) {
   const [templates, setTemplates] = useState([]);
@@ -13,9 +14,7 @@ export default function LogWorkoutModal({ isOpen, onClose, onWorkoutLogged }) {
   // Fetch user's most recent weight
   const fetchUserWeight = async () => {
     try {
-      const res = await fetch("http://localhost:5000/progress", {
-        credentials: "include",
-      });
+      const res = await api.get("/progress");
       const data = await res.json();
       if (data.progress && data.progress.length > 0) {
         setUserWeight(data.progress[0].weight);
@@ -33,9 +32,7 @@ export default function LogWorkoutModal({ isOpen, onClose, onWorkoutLogged }) {
 
     async function loadTemplates() {
       try {
-        const res = await fetch("http://localhost:5000/workouts?is_template=true", {
-          credentials: "include",
-        });
+        const res = await api.get("/workouts?is_template=true");
         const data = await res.json();
         setTemplates(data.workouts || []);
       } catch (err) {
@@ -49,9 +46,7 @@ export default function LogWorkoutModal({ isOpen, onClose, onWorkoutLogged }) {
   // Load exercises for selected template
   const loadTemplateExercises = async (template) => {
     try {
-      const res = await fetch(`http://localhost:5000/workouts/${template.workout_id}/exercises`, {
-        credentials: "include",
-      });
+      const res = await api.get(`/workouts/${template.workout_id}/exercises`);
       const data = await res.json();
       setExercises(
         data.exercises.map((ex) => ({
@@ -146,12 +141,7 @@ export default function LogWorkoutModal({ isOpen, onClose, onWorkoutLogged }) {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/workouts/log", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await api.post("/workouts/log", payload);
       const data = await res.json();
       if (data.success) {
         alert(`Workout logged! Estimated calories burned: ${data.total_calories.toFixed(2)}`);

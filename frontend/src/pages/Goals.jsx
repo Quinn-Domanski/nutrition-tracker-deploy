@@ -4,6 +4,7 @@ import LogoutButton from "../components/LogoutButton";
 import colors from "../theme/colors";
 import GoalCard from "../components/goals/GoalCard";
 import AddGoalModal from "../components/goals/AddGoalModal";
+import { api } from "../utils/api";
 
 export default function Goals() {
     const [goals, setGoals] = useState([]);
@@ -11,7 +12,7 @@ export default function Goals() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     useEffect(() => {
-        fetch("http://localhost:5000/goals", { credentials: "include" })
+        api.get("/goals")
             .then((res) => res.json())
             .then((data) => setGoals(data.goals || []))
             .catch((err) => console.error(err));
@@ -19,12 +20,7 @@ export default function Goals() {
 
     const handleAddGoal = async (newGoal) => {
         try {
-            const res = await fetch("http://localhost:5000/goals", {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newGoal),
-            });
+            const res = await api.post("/goals", newGoal);
             const data = await res.json();
             if (res.ok) setGoals([...goals, data.goal]);
             else alert(data.error || "Failed to add goal");
@@ -36,12 +32,7 @@ export default function Goals() {
 
     const logProgress = async (goalId, currentValue, metricUnit) => {
         try {
-            const res = await fetch(`http://localhost:5000/goals/${goalId}/progress`, {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ current_value: currentValue, metric_unit: metricUnit }),
-            });
+            const res = await api.post(`/goals/${goalId}/progress`, { current_value: currentValue, metric_unit: metricUnit });
             const data = await res.json();
             if (res.ok) {
                 setGoals((prev) =>
@@ -62,10 +53,7 @@ export default function Goals() {
 
     const completeGoal = async (goalId) => {
         try {
-            const res = await fetch(`http://localhost:5000/goals/${goalId}/complete`, {
-                method: "POST",
-                credentials: "include",
-            });
+            const res = await api.post(`/goals/${goalId}/complete`, {});
             const data = await res.json();
             if (res.ok) {
                 setGoals((prev) =>
@@ -82,10 +70,7 @@ export default function Goals() {
 
     const cancelGoal = async (goalId) => {
         try {
-            const res = await fetch(`http://localhost:5000/goals/${goalId}/cancel`, {
-                method: "POST",
-                credentials: "include",
-            });
+            const res = await api.post(`/goals/${goalId}/cancel`, {});
             const data = await res.json();
             if (res.ok) setGoals((prev) => prev.filter((g) => g.goal_id !== goalId));
             else alert(data.error || "Failed to cancel goal");

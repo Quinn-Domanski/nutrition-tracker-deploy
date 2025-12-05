@@ -8,6 +8,7 @@ import LogWorkoutModal from "../components/LogWorkoutModal";
 import ManageWorkoutModal from "../components/ManageWorkoutModal";
 import LoggedWorkoutsCard from "../components/loggedWorkoutsCard";
 import colors from "../theme/colors";
+import { api } from "../utils/api";
 
 export default function Workout() {
   const isLoggedIn = true;
@@ -39,9 +40,7 @@ export default function Workout() {
   useEffect(() => {
     async function loadSubcats() {
       try {
-        const res = await fetch("http://localhost:5000/exercises/subcategories", {
-          credentials: "include",
-        });
+        const res = await api.get("/exercises/subcategories");
         const data = await res.json();
         setSubcategoriesByCategory(data);
       } catch (err) {
@@ -57,9 +56,7 @@ export default function Workout() {
 
     async function loadExercises() {
       try {
-        const res = await fetch("http://localhost:5000/exercises/search", {
-          credentials: "include",
-        });
+        const res = await api.get("/exercises/search");
         const data = await res.json();
         setAllExercises(data.exercises || []);
       } catch (err) {

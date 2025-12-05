@@ -3,7 +3,7 @@ from utils.db import get_connection
 from psycopg2.extras import RealDictCursor
 import datetime
 
-goal_bp = Blueprint("goal", __name__)
+goal_bp = Blueprint("goal", __name__, url_prefix='/api')
 
 @goal_bp.route("/goals", methods=["GET"])
 def get_goals():

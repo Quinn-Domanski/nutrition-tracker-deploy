@@ -4,11 +4,9 @@ import datetime
 from psycopg2.extras import RealDictCursor
 import requests
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
 
-meal_bp = Blueprint('meals', __name__)
+meal_bp = Blueprint('meals', __name__, url_prefix='/api')
 
 #Convert empty strings to None for Database
 def empty_to_none(v):

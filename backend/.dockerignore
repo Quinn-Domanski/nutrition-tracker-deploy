@@ -1,0 +1,21 @@
+# Exclude virtual environment
+nutri/
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Environment files (never include secrets in the image)
+.env
+.env.local
+.env.test
+
+# SQLite or other local databases
+instance/*.db
+
+# Logs
+*.log
+
+# Tests (optional, not needed in production)
+test/
+

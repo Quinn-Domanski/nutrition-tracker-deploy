@@ -1,8 +1,7 @@
 import { User, UserMinus, Send } from "lucide-react";
 import colors from "../../theme/colors";
 import { useState } from "react";
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { api } from "../../utils/api";
 
 export default function FriendsList({ friends, onRemove, onChallengeSent }) {
   const [showChallengeModal, setShowChallengeModal] = useState(false);
@@ -28,16 +27,9 @@ export default function FriendsList({ friends, onRemove, onChallengeSent }) {
     setSubmitting(true);
 
     try {
-      const response = await fetch(`${API_URL}/api/challenges/send`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          friend_id: selectedFriend.id,
-          ...challengeForm
-        })
+      const response = await api.post("/challenges/send", {
+        friend_id: selectedFriend.id,
+        ...challengeForm
       });
 
       if (response.ok) {
